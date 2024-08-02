@@ -30,3 +30,40 @@ export const addFood = async (req, res) => {
     });
   }
 };
+
+export const listFood = async (req, res) => {
+  try {
+    const list = await Food.find();
+
+    res.json({
+      success: true,
+      message: "All Foods displayed",
+      data: {
+        foods: list,
+      },
+    });
+  } catch (err) {
+    res.json({
+      success: false,
+      message: err,
+    });
+  }
+};
+
+export const removeFood = async (req, res) => {
+  try {
+    const food = await Food.findById(req.params.id);
+    fs.unlink(`uploads/${food.image}`, () => {});
+    await Food.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({
+      status: "success",
+      data: null,
+    });
+  } catch (err) {
+    res.status(201).json({
+      status: "fail",
+      message: err,
+    });
+  }
+};
