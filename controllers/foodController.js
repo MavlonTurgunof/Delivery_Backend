@@ -38,9 +38,7 @@ export const listFood = async (req, res) => {
     res.json({
       success: true,
       message: "All Foods displayed",
-      data: {
-        foods: list,
-      },
+      data: list,
     });
   } catch (err) {
     res.json({
@@ -57,12 +55,13 @@ export const removeFood = async (req, res) => {
     await Food.findByIdAndDelete(req.params.id);
 
     res.status(200).json({
-      status: "success",
+      message: "Food successfully deleted",
+      success: true,
       data: null,
     });
   } catch (err) {
     res.status(201).json({
-      status: "fail",
+      success: false,
       message: err,
     });
   }
