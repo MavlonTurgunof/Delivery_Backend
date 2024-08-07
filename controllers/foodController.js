@@ -66,3 +66,40 @@ export const removeFood = async (req, res) => {
     });
   }
 };
+
+export const updateFood = async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+  const file = req.file;
+
+  try {
+    const food = await Food.findById(id);
+    if (!food) {
+      return res.status(404).json({
+        success: false,
+        message: "Food item not found",
+      });
+    }
+
+    if (file) {
+      // Delete the old image file if a new image is provided
+      fs.unlink(`uploads/${food.image}`, () => {});
+      updates.image = file.filename;
+    }
+
+    const updatedFood = await Food.findByIdAndUpdate(id, updates, {
+      new: true,
+    });
+
+    res.json({
+      success: true,
+      message: "Food updated successfully",
+      data: updatedFood,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
